@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brechós SP — Mapa</title>
+    <link rel="stylesheet" href="mapa.css">
+</head>
+<body>
+
+<div class="topbar">
+    <div>★ Início</div>
+    <div>│ ✉ Contato</div>
+    <span>São Paulo, 14 de Outubro de 2026 ✉</span>
+</div>
+
+<header class="header">
+    <img src="img/header.png" alt="Brechós SP">
+</header>
+
+<nav class="main-nav">
+    <a href="index.html">⌂ Início</a>
+    <a href="#">Brechós</a>
+    <a class="active" href="#">Mapa</a>
+    <a href="historias.html">Histórias</a>
+    <a href="#">Estilo</a>
+    <a href="#">Comunidade</a>
+    <a href="#">Sobre</a>
+</nav>
+
+<div class="announcement">
+    ★ &nbsp; GUIA DE BRECHÓS &nbsp; | &nbsp;
+    ESPECIAL: CENTRO DE SP &nbsp; | &nbsp;
+    ENVIE SUA HISTÓRIA &nbsp; ★
+</div>
+
+<main class="layout">
+
+    <aside class="left-column">
+
+       
+    </aside>
+
+    <section class="center-column">
+
+        <section class="map-panel">
+            <div class="panel-header">
+                <h1>📍 Mapa de Brechós em São Paulo</h1>
+
+                
+            </div>
+
+            <div class="map-wrapper map-area">
+                <img src="img/Group 2 (1).png" alt="Mapa de São Paulo com pins de brechós">
+            </div>
+
+            <div class="map-tip">
+                ★ <strong>Dica:</strong> clique nos marcadores para ver mais informações sobre o brechó,
+                como endereço, horário e fotos.
+            </div>
+        </section>
+
+    </section>
+
+    <aside class="right-column">
+        <div class="box" id="brechoInfo">
+            <div class="map-info-placeholder">
+                <div class="map-info-icon">📍</div>
+                <h2>Nenhum brechó selecionado</h2>
+                <p>Selecione um dos pins no mapa para visualizar as informações do brechó.</p>
+            </div>
+        </div>
+    </aside>
+
+</main>
+
+<footer>
+    <nav>
+        <a href="#">Início</a> |
+        <a href="#">Brechós</a> |
+        <a href="#">Mapa</a> |
+        <a href="#">Histórias</a> |
+        <a href="#">Estilo</a> |
+        <a href="#">Comunidade</a> |
+        <a href="#">Sobre</a> |
+        <a href="#">Contato</a>
+    </nav>
+
+    <p>Brechós SP — Moda que já viveu. © 2026–2027. Todos os direitos reservados.</p>
+    <span>Melhor visualizado em Internet Explorer 6 / Netscape Navigator</span>
+</footer>
+
+
+<script>
+const brechos = {
+    gracinha: {
+        nome: "Brechó Gracinha",
+        bairro: "Santa Cecília",
+        endereco: "Rua General Júlio Marcondes Salgado, 123",
+        horario: "Seg a Sáb — 10h às 19h",
+        descricao: "Brechó com peças vintage, roupas casuais e acessórios selecionados."
+    },
+    arouche: {
+        nome: "Espaço Arouche Brechós",
+        bairro: "República",
+        endereco: "Praça Alfredo Issa, 45",
+        horario: "Seg a Sex — 10h às 18h",
+        descricao: "Espaço dedicado ao garimpo de peças vintage e de segunda mão."
+    },
+    poclocka: {
+        nome: "Poclocka Brechó",
+        bairro: "Santa Cecília",
+        endereco: "Rua das Palmeiras, 200",
+        horario: "Ter a Sáb — 11h às 19h",
+        descricao: "Peças selecionadas e achados únicos no centro de São Paulo."
+    },
+    colmeia: {
+        nome: "Brechó Colmeia",
+        bairro: "Santa Cecília",
+        endereco: "Rua Martim Francisco, 80",
+        horario: "Seg a Sáb — 10h às 18h",
+        descricao: "Garimpo de roupas, acessórios e peças vintage."
+    },
+    fundinho: {
+        nome: "Brechó no Fundinho",
+        bairro: "República",
+        endereco: "Rua Aurora, 210",
+        horario: "Seg a Sáb — 10h às 19h",
+        descricao: "Peças de segunda mão e achados especiais em uma seleção rotativa."
+    },
+    skills: {
+        nome: "Skills Brechó",
+        bairro: "Centro",
+        endereco: "Rua Boa Vista, 88",
+        horario: "Seg a Sex — 10h às 18h",
+        descricao: "Garimpo de roupas e acessórios com foco em peças únicas."
+    },
+    criativa: {
+        nome: "Vitrine Criativa Brechó",
+        bairro: "Centro",
+        endereco: "Rua do Arouche, 70",
+        horario: "Seg a Sáb — 11h às 19h",
+        descricao: "Brechó com curadoria de peças vintage e contemporâneas."
+    },
+    bazar: {
+        nome: "Bazar Pop Rua",
+        bairro: "Centro",
+        endereco: "Rua Barão de Itapetininga, 150",
+        horario: "Seg a Sáb — 10h às 18h",
+        descricao: "Moda acessível, garimpos e peças para todos os estilos."
+    },
+    froufrou: {
+        nome: "Frou Frou Vintage",
+        bairro: "Bela Vista",
+        endereco: "Rua Augusta, 320",
+        horario: "Ter a Sáb — 11h às 20h",
+        descricao: "Seleção de peças vintage e acessórios com personalidade."
+    },
+    number_vintage: {
+        nome: "Numb Vintage Brechó",
+        bairro: "Centro",
+        endereco: "Rua São Bento, 180",
+        horario: "Seg a Sáb — 10h às 19h",
+        descricao: "Peças vintage e garimpos selecionados no centro de São Paulo."
+    },
+    criativa_augusta: {
+        nome: "Vitrine Criativa",
+        bairro: "Consolação",
+        endereco: "Rua São Bento, 180",
+        horario: "Seg a Sáb — 10h às 19h",
+        descricao: "Peças vintage e garimpos selecionados no centro de São Paulo."
+    },
+    charme: {
+        nome: "Charme Brechó",
+        bairro: "Consolação",
+        endereco: "Rua São Bento, 180",
+        horario: "Seg a Sáb — 10h às 19h",
+        descricao: "Peças vintage e garimpos selecionados no centro de São Paulo."
+    }
+};
+
+function mostrarBrecho(id) {
+    const brecho = brechos[id];
+    const painel = document.getElementById("brechoInfo");
+
+    if (!brecho || !painel) return;
+
+    painel.innerHTML = `
+        <div class="map-info-content">
+            <div class="map-info-tag">BRECHÓ</div>
+            <h2>${brecho.nome}</h2>
+
+
+            <p><strong>🏠 Endereço:</strong> <img src="img/header.png" alt="Brechós SP"></p>
+            <p><strong>📍 Bairro:</strong> ${brecho.bairro}</p>
+            <p><strong>🏠 Endereço:</strong> ${brecho.endereco}</p>
+            <p><strong>🏠 Endereço:</strong> ${brecho.endereco}</p>
+            <p><strong>🕐 Horário:</strong> ${brecho.horario}</p>
+
+            <hr>
+
+            <p class="map-info-description">${brecho.descricao}</p>
+
+            <button type="button" class="map-info-button">
+                Ver página do brechó »
+            </button>
+        </div>
+    `;
+
+    document.querySelectorAll(".map-pin").forEach(pin => {
+        pin.classList.remove("selected");
+    });
+
+    const selecionado = document.querySelector(`[data-brecho="${id}"]`);
+    if (selecionado) selecionado.classList.add("selected");
+}
+
+function fecharBrecho() {
+    const painel = document.getElementById("brechoInfo");
+    if (!painel) return;
+
+    painel.innerHTML = `
+        <div class="map-info-placeholder">
+            <div class="map-info-icon">📍</div>
+            <h2>Selecione um brechó</h2>
+            <p>Clique em um dos pins no mapa para ver as informações do brechó.</p>
+        </div>
+    `;
+
+    document.querySelectorAll(".map-pin").forEach(pin => {
+        pin.classList.remove("selected");
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const mapArea = document.querySelector(".map-area");
+    const mapImage = mapArea ? mapArea.querySelector("img") : null;
+
+    if (!mapArea || !mapImage) return;
+
+    // Garante que o mapa possa receber os pins sem alterar o CSS externo.
+    mapArea.style.position = "relative";
+
+    const pinData = [
+        ["gracinha", 27.8, 9.6],
+        ["arouche", 39.5, 25.8],
+        ["poclocka", 18.1, 32.0],
+        ["colmeia", 54.5, 12],
+        ["fundinho", 61.8, 22.4],
+        ["skills", 54.9, 85.1],
+        ["criativa", 60.7, 34],
+        ["bazar", 35.8, 56.5],
+        ["froufrou", 39, 82.3],
+        ["number_vintage", 84.7, 53.0],
+        ["criativa_augusta", 23.8, 63.6],
+        ["charme", 11.4, 63.6]
+    ];
+
+    pinData.forEach(([id, left, top]) => {
+        const pin = document.createElement("button");
+
+        pin.type = "button";
+        pin.className = "map-pin";
+        pin.dataset.brecho = id;
+        pin.setAttribute("aria-label", `Abrir informações de ${brechos[id].nome}`);
+        pin.textContent = "📍";
+
+        pin.style.left = `${left}%`;
+        pin.style.top = `${top}%`;
+
+        pin.addEventListener("click", () => mostrarBrecho(id));
+        mapArea.appendChild(pin);
+    });
+
+    // Estilos exclusivos desta implementação, injetados apenas em mapa.html.
+    const style = document.createElement("style");
+    style.textContent = `
+        .map-pin {
+            position: absolute;
+            z-index: 20;
+            transform: translate(-50%, -50%);
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            background: #e44f54;
+            color: #fff;
+            font-size: 18px;
+            line-height: 30px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,.45);
+            transition: transform .12s ease, background .12s ease;
+        }
+
+        .map-pin:hover,
+        .map-pin.selected {
+            transform: translate(-50%, -50%) scale(1.18);
+            background: #c72f48;
+        }
+
+        .map-info-content {
+            color: #24447f;
+        }
+
+        .map-info-tag {
+            display: inline-block;
+            margin-bottom: 7px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: #d94f85;
+            color: #fff;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .map-info-content h2 {
+            margin: 3px 0 13px;
+            color: #244b91;
+            font-size: 22px;
+        }
+
+        .map-info-content p {
+            margin: 9px 0;
+            line-height: 1.45;
+        }
+
+        .map-info-content hr {
+            border: 0;
+            border-top: 1px dotted #8da5d3;
+            margin: 14px 0;
+        }
+
+        .map-info-description {
+            color: #5a6f96;
+        }
+
+        .map-info-button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 9px;
+            border: 2px solid #5e82d8;
+            border-radius: 7px;
+            background: linear-gradient(#a9c9ff, #4e7bd8 52%, #6854c3);
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .map-info-placeholder {
+            padding: 55px 12px;
+            text-align: center;
+            color: #6378a5;
+        }
+
+        .map-info-placeholder h2 {
+            margin: 10px 0 8px;
+            color: #254b91;
+            font-size: 20px;
+        }
+
+        .map-info-placeholder p {
+            line-height: 1.5;
+        }
+
+        .map-info-icon {
+            font-size: 44px;
+        }
+
+        @media (max-width: 700px) {
+            .map-pin {
+                width: 29px;
+                height: 29px;
+                font-size: 15px;
+                line-height: 25px;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+});
+</script>
+
+</body>
+</html>
