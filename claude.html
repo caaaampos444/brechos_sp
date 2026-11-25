@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brechós SP — Mapa Interativo</title>
+    <link rel="icon" type="image/png" href="img/icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="page-mapa-interativo">
+
+<div class="topbar">
+    <div>★ Início</div>
+</div>
+
+<header class="header">
+    <img src="img/brechos_de_sp.gif" alt="Brechós SP">
+</header>
+
+<nav class="main-nav">
+    <a href="index.html">⌂ Início</a>
+    <a href="mapa.html">Mapa</a>
+    <a href="historias.html">Histórias</a>
+</nav>
+
+<div class="announcement">
+    ★ &nbsp; GUIA DE BRECHÓS &nbsp; | &nbsp;
+    ESPECIAL: CENTRO DE SP &nbsp; ★
+</div>
+
+<main class="map-layout">
+
+    <section class="center-column">
+        <section class="map-panel">
+            <div class="panel-header">
+                <h1>📍 Brechós em destaque no mapa</h1>
+                <span class="map-count" id="mapCount">0 de 9</span>
+            </div>
+
+            <div class="map-wrapper">
+                <div id="map" class="map-canvas" aria-label="Mapa de São Paulo com os brechós destacados"></div>
+            </div>
+
+            <div class="map-tip">
+                ★ <strong>Dica:</strong> clique nos marcadores (ou na lista ao lado) para ver endereço,
+                história e como chegar. Use o scroll ou os botões + / − para dar zoom.
+            </div>
+            <div class="map-tip" id="mapStatus">Localizando os endereços…</div>
+        </section>
+    </section>
+
+    <aside class="right-column">
+        <div class="box">
+            <h2>★ Brechós no mapa</h2>
+            <ul class="category-list brecho-list" id="brechoList"></ul>
+            <button type="button" class="map-side-button" id="btnTodos">Ver todos ▸</button>
+        </div>
+
+        <div class="box" id="brechoInfo">
+            <div class="map-info-placeholder">
+                <div class="map-info-icon">📍</div>
+                <h2>Nenhum brechó selecionado</h2>
+                <p>Selecione um dos pins no mapa para visualizar as informações do brechó.</p>
+            </div>
+        </div>
+    </aside>
+
+</main>
+
+<footer>
+    <nav>
+        <a href="#">Por: </a>
+        <a href="#">Federico Lupi</a> |
+        <a href="#">Gabriel Dinis</a> |
+        <a href="#">Giovanna Araújo</a> |
+        <a href="#">Gustavo de Campos</a> |
+        <a href="#">Maria Eduarda Gabnai</a> |
+        <a href="#">Sofia Tosta</a> |
+        <a href="#">Sophie Magri</a>
+    </nav>
+
+    <div class="footer-content">
+        <div class="footer-logo">BRECHÓS SP</div>
+        <p>Moda que já viveu. Cultura que continua.</p>
+        <div class="browser-badges">◎ Internet Explorer &nbsp; ◉ Netscape</div>
+    </div>
+
+    <small>Brechós SP — Moda, cultura e boas histórias. © 2006–2026. Todos os direitos reservados.</small>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+/*
+  Para fixar a posição de um pin manualmente, preencha lat e lng no brechó
+  (no Google Maps: clique com o botão direito no local e copie as coordenadas).
+  Sem lat/lng, a página procura o endereço sozinha (OpenStreetMap) e guarda o
+  resultado no navegador.
+*/
+const brechos = [
+    {
+        id: "butterfly",
+        nome: "Brechó Butterfly",
+        bairro: "Jardim Taboão (Portal do Morumbi)",
+        endereco: "Rua Doutor Luiz Migliano, 1110 — Loja 14, Trader Center Shopping",
+        descricao: "Negócio familiar que transforma roupas e aproxima histórias.",
+        foto: "img/butterflylogo.jpg",
+        historia: "sofia.html",
+        lat: null, lng: null,
+        busca: ["Rua Doutor Luiz Migliano, 1110, São Paulo", "Rua Dr. Luiz Migliano, 1110, São Paulo", "Rua Doutor Luiz Migliano, São Paulo"]
+    },
+    {
+        id: "caprichoatoa",
+        nome: "Brechó Capricho à Toa",
+        bairro: "Sumarezinho",
+        endereco: "Rua Heitor Penteado, 1096",
+        descricao: "O maior brechó do Brasil: loja de três andares e 800 m², nascida de um bazar em casa.",
+        foto: "img/caprichoatoa.jpg",
+        historia: "sophie.html",
+        lat: null, lng: null,
+        busca: ["Rua Heitor Penteado, 1096, São Paulo", "Capricho à Toa, São Paulo", "Rua Heitor Penteado, São Paulo"]
+    },
+    {
+        id: "minhavotinha",
+        nome: "Minha Avó Tinha",
+        bairro: "Lapa",
+        endereco: "Rua Tomé de Souza, 100",
+        descricao: "Peças de época dos anos 1920 aos 1990, no ar desde 1992.",
+        foto: "img/minhavotinhalogo.jpg",
+        historia: "doto.html",
+        lat: null, lng: null,
+        busca: ["Rua Tomé de Souza, 100, Lapa, São Paulo", "Rua Tomé de Souza, Lapa, São Paulo", "Rua Tomé de Souza, São Paulo"]
+    },
+    {
+        id: "regofreitas",
+        nome: "Vó Judith Vintage",
+        bairro: "República",
+        endereco: "Rua Rego Freitas, 282",
+        descricao: "Mais de 20 anos de história, com peças vintage e de grife de diferentes épocas.",
+        foto: "img/vojudith.jpg",
+        historia: "giaraujo.html",
+        lat: null, lng: null,
+        busca: ["Rua Rego Freitas, 282, São Paulo", "Rua Rego Freitas, República, São Paulo"]
+    },
+    {
+        id: "camargoaranha",
+        nome: "Brechollé",
+        bairro: "",
+        endereco: "Rua Carlos Camargo Aranha, 175",
+        descricao: "Desde 2013, avalia peças de terceiros e define regras para quem entrega e para quem compra.",
+        foto: "img/brecholle.jpg",
+        historia: "duda.html",
+        lat: null, lng: null,
+        busca: ["Rua Carlos Camargo Aranha, 175, São Paulo", "Rua Carlos Camargo Aranha, São Paulo"]
+    },
+    {
+        id: "fundinho",
+        nome: "Brechó no Fundinho",
+        bairro: "República",
+        endereco: "Rua Basílio da Gama, 29 - Salas 904 e 905, 10º andar",
+        horario: "Seg a Sáb — 10h às 19h",
+        descricao: "Peças de segunda mão e achados especiais em uma seleção rotativa.",
+        foto: "",
+        historia: "",
+        lat: null, lng: null,
+        busca: ["Rua Basílio da Gama, 29, São Paulo", "Rua Basílio da Gama, República, São Paulo"]
+    },
+    {
+        id: "bel",
+        nome: "Bel Brechó",
+        bairro: "Bela Vista",
+        endereco: "Rua Fortaleza, 240",
+        horario: "Seg a Sex — 10h às 18h",
+        descricao: "Garimpo de roupas e acessórios com foco em peças únicas.",
+        foto: "",
+        historia: "",
+        lat: null, lng: null,
+        busca: ["Rua Fortaleza, 240, Bela Vista, São Paulo", "Rua Fortaleza, 240, São Paulo", "Rua Fortaleza, Bela Vista, São Paulo"]
+    },
+    {
+        id: "numbvintage",
+        nome: "Numb Vintage Brechó",
+        bairro: "Sé",
+        endereco: "Praça da Sé, 371 - 7º Andar, Sala 703",
+        horario: "Seg a Sáb — 10h às 19h",
+        descricao: "Peças vintage e garimpos selecionados no centro de São Paulo.",
+        foto: "",
+        historia: "",
+        lat: null, lng: null,
+        busca: ["Praça da Sé, 371, São Paulo", "Praça da Sé, São Paulo"]
+    },
+    {
+        id: "criativa",
+        nome: "Vitrine Criativa",
+        bairro: "Consolação",
+        endereco: "Rua Augusta, 1298",
+        horario: "Seg a Sáb — 10h às 19h",
+        descricao: "Peças vintage e garimpos selecionados no centro de São Paulo.",
+        foto: "",
+        historia: "",
+        lat: null, lng: null,
+        busca: ["Rua Augusta, 1298, São Paulo", "Rua Augusta, 1298, Consolação, São Paulo", "Rua Augusta, Consolação, São Paulo"]
+    }
+];
+
+const CACHE_KEY = "brechos-sp:geo:v1";
+const VIEWBOX = "-46.85,-23.35,-46.35,-23.80"; // limita a busca ao município de São Paulo
+
+const map = L.map("map", { zoomControl: true }).setView([-23.5505, -46.6333], 11);
+
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+
+const listaEl = document.getElementById("brechoList");
+const painelEl = document.getElementById("brechoInfo");
+const statusEl = document.getElementById("mapStatus");
+const countEl = document.getElementById("mapCount");
+
+const pausa = ms => new Promise(r => setTimeout(r, ms));
+
+function lerCache() {
+    try { return JSON.parse(localStorage.getItem(CACHE_KEY)) || {}; } catch (e) { return {}; }
+}
+function salvarCache(c) {
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify(c)); } catch (e) {}
+}
+
+function linkMaps(b, modo) {
+    const q = encodeURIComponent(`${b.endereco.replace(/ [—–-] .*$/, "")}, São Paulo - SP`);
+    return modo === "rota"
+        ? `https://www.google.com/maps/dir/?api=1&destination=${q}`
+        : `https://www.google.com/maps/search/?api=1&query=${q}`;
+}
+
+/* Lista lateral */
+brechos.forEach(b => {
+    const li = document.createElement("li");
+    li.dataset.id = b.id;
+    li.tabIndex = 0;
+    li.innerHTML = `📍 ${b.nome}<small>${b.endereco}</small>`;
+    li.addEventListener("click", () => selecionar(b.id));
+    li.addEventListener("keydown", e => { if (e.key === "Enter") selecionar(b.id); });
+    listaEl.appendChild(li);
+});
+
+/* Painel de informações */
+function mostrarPainel(b) {
+    painelEl.innerHTML = `
+        <div class="map-info-content">
+            <div class="map-info-tag">BRECHÓ</div>
+            <h2>${b.nome}</h2>
+            ${b.foto ? `<img src="${b.foto}" alt="${b.nome}">` : ""}
+            ${b.bairro ? `<p><strong>📍 Bairro:</strong> ${b.bairro}</p>` : ""}
+            <p><strong>🏠 Endereço:</strong> ${b.endereco}</p>
+            ${b.horario ? `<p><strong>🕐 Horário:</strong> ${b.horario}</p>` : ""}
+            ${b.lat !== null && !b.exato ? `<p class="map-info-note">Posição aproximada no mapa (ponto na rua).</p>` : ""}
+            ${b.lat === null ? `<p class="map-info-note">Não foi possível marcar este endereço no mapa; use o link do Google Maps.</p>` : ""}
+            ${b.descricao ? `<hr><p class="map-info-description">${b.descricao}</p>` : ""}
+            ${b.historia ? `<a class="map-info-button" href="${b.historia}">Ver história do brechó »</a>` : ""}
+            <a class="map-info-button" href="${linkMaps(b, "rota")}" target="_blank" rel="noopener">Como chegar (Google Maps) ▸</a>
+        </div>`;
+}
+
+function selecionar(id) {
+    const b = brechos.find(x => x.id === id);
+    if (!b) return;
+
+    brechos.forEach(o => {
+        const pin = o.marker && o.marker.getElement() && o.marker.getElement().querySelector(".map-pin");
+        if (pin) pin.classList.toggle("selected", o.id === id);
+    });
+    listaEl.querySelectorAll("li").forEach(li => li.classList.toggle("selected", li.dataset.id === id));
+
+    mostrarPainel(b);
+    if (b.marker) map.flyTo(b.marker.getLatLng(), Math.max(map.getZoom(), 15), { duration: .8 });
+    if (window.matchMedia("(max-width: 900px)").matches) {
+        painelEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+}
+
+function criarPin(b) {
+    const comHistoria = !!b.historia; // brechós com página de história ganham o pin ★
+    const t = comHistoria ? 40 : 34;
+    const icone = L.divIcon({
+        className: "pin-wrap",
+        html: comHistoria ? '<div class="map-pin tem-historia">★</div>' : '<div class="map-pin">📍</div>',
+        iconSize: [t, t],
+        iconAnchor: [t / 2, t / 2]
+    });
+    b.marker = L.marker([b.lat, b.lng], { icon: icone, title: b.nome, alt: b.nome, zIndexOffset: comHistoria ? 500 : 0 })
+        .addTo(map)
+        .bindTooltip(b.nome, { direction: "top", offset: [0, -16] })
+        .on("click", () => selecionar(b.id));
+}
+
+/* Busca de endereço (Nominatim / OpenStreetMap) */
+async function nominatim(q) {
+    const params = new URLSearchParams({
+        q, format: "jsonv2", limit: "1", addressdetails: "1",
+        countrycodes: "br", "accept-language": "pt-BR",
+        viewbox: VIEWBOX, bounded: "1"
+    });
+    const resp = await fetch("https://nominatim.openstreetmap.org/search?" + params);
+    if (!resp.ok) throw new Error("HTTP " + resp.status);
+    const d = (await resp.json())[0];
+    if (!d) return null;
+    return { lat: +d.lat, lng: +d.lon, exato: !!(d.address && d.address.house_number) };
+}
+
+async function buscar(consultas) {
+    for (const q of consultas) {
+        try {
+            const r = await nominatim(q);
+            if (r) return r;
+        } catch (e) { /* tenta a próxima consulta */ }
+        await pausa(1100); // limite de 1 requisição por segundo do Nominatim
+    }
+    return null;
+}
+
+function atualizarStatus(total, ok, fim) {
+    countEl.textContent = `${ok} de ${total}`;
+    if (!fim) { statusEl.textContent = `Localizando os endereços… (${ok} de ${total})`; return; }
+    statusEl.textContent = ok === total
+        ? "★ Todos os endereços foram marcados no mapa."
+        : `★ ${ok} de ${total} endereços marcados. Os demais podem ser abertos pelo Google Maps na lista.`;
+}
+
+async function localizar() {
+    const cache = lerCache();
+    let ok = 0;
+    atualizarStatus(brechos.length, 0, false);
+
+    for (const b of brechos) {
+        b.exato = b.lat !== null;
+        if (b.lat === null) {
+            if (cache[b.id]) {
+                Object.assign(b, cache[b.id]);
+            } else {
+                const r = await buscar(b.busca);
+                if (r) { Object.assign(b, r); cache[b.id] = r; salvarCache(cache); }
+            }
+        }
+        if (b.lat !== null) {
+            criarPin(b);
+            ok++;
+        } else {
+            const li = listaEl.querySelector(`[data-id="${b.id}"]`);
+            if (li) li.classList.add("off");
+        }
+        atualizarStatus(brechos.length, ok, false);
+    }
+
+    const achados = brechos.filter(b => b.marker);
+    if (achados.length) map.fitBounds(L.featureGroup(achados.map(b => b.marker)).getBounds(), { padding: [50, 50], maxZoom: 14 });
+    atualizarStatus(brechos.length, ok, true);
+    console.info("Coordenadas encontradas (cole em lat/lng para fixar):",
+        JSON.stringify(brechos.map(b => ({ id: b.id, lat: b.lat, lng: b.lng, exato: b.exato }))));
+}
+
+document.getElementById("btnTodos").addEventListener("click", () => {
+    const achados = brechos.filter(b => b.marker);
+    if (achados.length) map.fitBounds(L.featureGroup(achados.map(b => b.marker)).getBounds(), { padding: [50, 50], maxZoom: 14 });
+});
+
+localizar();
+</script>
+
+</body>
+</html>
